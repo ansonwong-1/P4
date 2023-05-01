@@ -1,20 +1,19 @@
-# P4 by coMBAT TAMBourine
-## Mahir Riki: 
-## Brian Chen:
-## Anson Wong:
-## Talia Hsia:
+## P4 by coMBAT TAMBourine
 
-### App Description:
+### Roster
+Mahir Riki:  
+Brian Chen:  
+Anson Wong:  
+Talia Hsia:  
+
+### Description:
  
 ### Launch Codes: 
- 0. Clone repo
+#### How to Clone/Install:
+#### How to Run
 
- ```bash
-git@github.com:ansonwong-1/P4.git
- ```
+### APIs: 
 
-1. `cd` into local repo
-
- ```bash
- cd P4
- ```
+### Data: 
+#### Description:
+#### Source: 
