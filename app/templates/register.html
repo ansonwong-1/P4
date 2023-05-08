@@ -1,0 +1,46 @@
+<!--
+Blue Haired Gals With Pronouns: Jasmine Yuen, Talia Hsia, Ziying Jian
+SoftDev
+K19 - Flask app that uses session capabilites to allow user to login and logout
+2022-11-03
+time spent:
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> REGISTER PAGE </title>
+    <link rel="stylesheet" type = "text/css" href="../static/register.css">
+  </head>
+
+  <body class = "register">
+    <h1>
+      Register page??
+    </h1>
+    Made by coMBAT TAMBorines!
+    <h2>
+      REGISTER HERE
+    </h2>
+
+    <h3>
+      Username:
+    </h3>
+    <form action="/register" method = "POST" class = "form">
+      <input type="text" name="usernameReg">
+    <br>
+    <h3>
+      Password:
+    </h3>
+      <input type="text" name="passwordReg">
+    <br>
+    <br>
+      <input id = "regbut" type="submit" name="sub1" value="Register" class = "button">
+    </form>
+    <br>
+    <div id = "regmsg">
+      {{registerMSG}}
+    </div>
+        
+  </body>
+
+</html>
