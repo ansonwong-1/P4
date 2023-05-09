@@ -4,8 +4,9 @@ import sys
 sys.path.append("..")
 
 from flask import Blueprint, render_template, request, session
+'''
 from database import user
-
+'''
 # Create the blueprint
 home_bp = Blueprint('home', __name__)
 
@@ -26,3 +27,4 @@ def home(*args, **kwargs):
     else:
         return render_template("index_guest.html")
         '''
+    return render_template('landing.html')
