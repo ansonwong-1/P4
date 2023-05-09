@@ -18,8 +18,17 @@ pd 2
 ==============================================================
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
+taliaH -- 2023-05-08 9:00
+--------------------------------------------------------------
+Creates routes and templates for flask app
+==============================================================
 
 ansonW -- 2023-05-09 9:00
 --------------------------------------------------------------
 Uploaded v1 of design doc: we changed arrows on site map for clarity; added js to component map; expanded on description of how we would use js; added a description of our APIs; added to program components section
+==============================================================
+
+brianC -- 2023-05-09 9:00
+--------------------------------------------------------------
+Began js and database files
 ==============================================================
