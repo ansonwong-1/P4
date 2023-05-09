@@ -13,6 +13,7 @@ home_bp = Blueprint('home', __name__)
 @home_bp.route("/")
 def home(*args, **kwargs):
     # Fetch the user from the database
+    '''
     if "username" in session:
         user_data = user.get_user(request.db, session["username"])
         if len(user_data) > 0:
@@ -24,3 +25,4 @@ def home(*args, **kwargs):
         return render_template("index.html", user=user_data)
     else:
         return render_template("index_guest.html")
+        '''
