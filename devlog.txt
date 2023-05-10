@@ -32,3 +32,8 @@ brianC -- 2023-05-09 9:00
 --------------------------------------------------------------
 Began js and database files
 ==============================================================
+
+coMBAT TAMBourine -- 2023-05-10 8:00
+--------------------------------------------------------------
+DATA CONDUIT: haven't made major changes from the design doc- our database will store each flight with its flight number, airline, arrival time, departure time, destination, start, status (in air or not), latitude, longitude, direction, and velocity. On our landing page, we render our map using leaflet and each active flight at the position given by the latitude and longitude. We also rotate the icon according to the direction. On our flight info page, which the user will be redirected to afer clicking a specific flight icon, we will show flight information by taking the flight number, airline, arrival time, departure time, destination, and start from the database.
+==============================================================
