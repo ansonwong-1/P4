@@ -23,5 +23,5 @@ def flightinfo(*args, **kwargs):
     if "username" in session:
         return render_template("flightinfo.html", user=user_data)
     else:
-        return render_template("index_guest.html")
+        return render_template("login.html")
 
