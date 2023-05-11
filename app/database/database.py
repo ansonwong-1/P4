@@ -14,3 +14,6 @@ def add_flights():
     c.execute("INSERT INTO flights VALUES(?, ?, ?)", (0,"123","123") )
     db.commit()
     c.close()
+
+setup_tables()
+add_flights()
