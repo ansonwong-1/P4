@@ -5,7 +5,7 @@ sys.path.append("..")
 
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from database import user
-import validate_username, validate_password
+from utils.data_validation import validate_username, validate_password
 
 # Create the blueprint
 login_bp = Blueprint('login', __name__)
