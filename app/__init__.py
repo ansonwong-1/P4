@@ -49,7 +49,11 @@ def before_request():
 
     '''
 
-
+""" @app.route('getplanes', methods=['GET'])
+def getplanes():
+    # access the plane data
+    planeData = None
+    return render_template('getplanes.html', planes=planeData) """
 
 
 if __name__ == "__main__":  # false if this file imported as module
