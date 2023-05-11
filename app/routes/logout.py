@@ -19,7 +19,7 @@ def check_auth():
             # Redirect the user to the login page
             return redirect('/login')
 
-check_auth = check_auth.check_auth
+#check_auth = check_auth.check_auth
 
 # Create the blueprint
 logout_bp = Blueprint('logout', __name__)
