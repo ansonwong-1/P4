@@ -2,7 +2,7 @@ import json
 
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for  # web server essentials
-
+from database import database
 
 from routes.home import home_bp
 
@@ -13,7 +13,7 @@ from routes.register import register_bp
 from routes.flightinfo import flightinfo_bp
 
 
-from utils import b64
+from tools import b64
 
 
 #from utils import _api
@@ -23,7 +23,7 @@ from utils import b64
 
 
 global db
-db = database.Database()
+db = database.database()
 
 
 
