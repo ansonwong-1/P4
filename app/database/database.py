@@ -15,5 +15,5 @@ def add_flights():
     db.commit()
     c.close()
 
-setup_tables()
-add_flights()
+#setup_tables()
+#add_flights()
