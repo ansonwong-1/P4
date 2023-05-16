@@ -21,10 +21,10 @@ from tools import b64
 #from utils import _api
 #from utils import _api
 
-
+'''
 global db
 db = database.database()
-
+'''
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -38,26 +38,26 @@ app.register_blueprint(login_bp)
 app.register_blueprint(logout_bp)
 app.register_blueprint(register_bp)
 
-
+'''
 
 
 app.secret_key = b64.base64_encode(
     "very good secret key. it's really secure now that we encoded it into base64!")
 
 
-'''
+
 @app.before_request
 def before_request():
     request.db = db
 
-    '''
-
+    
+'''
 @app.route('getplanes', methods=['GET'])
 def getplanes():
     # access the plane data
     planeData = None
-    return render_template('getplanes.html', planes=planeData) """
-
+    return render_template('getplanes.html', planes=planeData) 
+'''
 
 if __name__ == "__main__":  # false if this file imported as module
     # enable debugging, auto-restarting of server when this file is modified
@@ -67,4 +67,4 @@ if __name__ == "__main__":  # false if this file imported as module
         host="0.0.0.0",
         port=5001,
     )
-    '''
+    
