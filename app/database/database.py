@@ -26,6 +26,7 @@ def add_to_table():
         last_update = plane[3]
         
         c.execute("INSERT OR REPLACE INTO planes (f_id, callsign, origin_country, longi, lat, last_update) VALUES (?, ?, ?, ?, ?, ?)", (f_id, callsign, origin_country, longi, lat, last_update))
+    db.commit()
     c.close()
 
 def get_plane_data():
