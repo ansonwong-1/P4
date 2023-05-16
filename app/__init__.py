@@ -31,11 +31,9 @@ app = Flask(__name__, static_url_path='/static')
 
 
 app.register_blueprint(home_bp)
-<<<<<<< HEAD
 app.register_blueprint(flightinfo_bp)
+
 '''
-=======
->>>>>>> ba0644e3e72df1adc748eab47db5d544f3645a8f
 app.register_blueprint(login_bp)
 app.register_blueprint(logout_bp)
 app.register_blueprint(register_bp)
