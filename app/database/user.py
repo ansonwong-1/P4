@@ -1,9 +1,13 @@
 # User database operations
 # DB should be of type cursor
-import fuckit
+import sqlite3
+import json
 
 # import library while preventing errors with json parsing
-fuckit(fuckit("json"))
+# fuckit(fuckit("json"))
+
+DB_FILE = "users.db"
+db = sqlite3.connect(DB_FILE, check_same_thread=False)
 
 
 def create_table(db) -> None:
@@ -16,14 +20,16 @@ def create_table(db) -> None:
     Returns:
         None
     """
-    db.cur.execute("CREATE TABLE IF NOT EXISTS users (" +
-                   "id INTEGER PRIMARY KEY, " +
-                   "username TEXT, " +
-                   "password TEXT, " +
-                   "previous_characters TEXT, " +
-                   "qualities TEXT)")
+    c = db.cursor()
+    c.execute("CREATE TABLE IF NOT EXISTS users (" +
+              "id INTEGER PRIMARY KEY, " +
+              "username TEXT, " +
+              "password TEXT, " +
+              "previous_characters TEXT, " +
+              "qualities TEXT)")
     # Save changes
-    db.conn.commit()
+    db.commit()
+    c.close()
 
 
 def insert(db, username, password) -> None:
@@ -38,10 +44,12 @@ def insert(db, username, password) -> None:
     Returns:
         None
     """
-    db.cur.execute("INSERT INTO users VALUES " +
-                   "(NULL, ?, ?, ?, ?)",
-                   (username, password, "", "{}"))
-    db.conn.commit()
+    c = db.cursor()
+    c.execute("INSERT INTO users VALUES " +
+              "(NULL, ?, ?, ?, ?)",
+              (username, password, "", "{}"))
+    db.commit()
+    c.close()
 
 
 def get_user(db, username) -> list:
