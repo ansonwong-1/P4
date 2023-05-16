@@ -13,7 +13,7 @@ flightinfo_bp = Blueprint('flightinfo', __name__)
 @flightinfo_bp.route("/flightinfo")
 def flightinfo(*args, **kwargs):
     # Fetch the user from the database
-    '''
+    
     if "username" in session:
         user_data = user.get_user(request.db, session["username"])
         if len(user_data) > 0:
@@ -25,7 +25,7 @@ def flightinfo(*args, **kwargs):
         return render_template("flightinfo.html", user=user_data)
     else:
         return render_template("login.html")
-        '''
-    return render_template("flightinfo.html")   
+    
+    #return render_template("flightinfo.html")   
 
 
