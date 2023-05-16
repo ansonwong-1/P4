@@ -52,7 +52,7 @@ def before_request():
 
     '''
 
-""" @app.route('getplanes', methods=['GET'])
+@app.route('getplanes', methods=['GET'])
 def getplanes():
     # access the plane data
     planeData = None
@@ -67,3 +67,4 @@ if __name__ == "__main__":  # false if this file imported as module
         host="0.0.0.0",
         port=5001,
     )
+    '''
