@@ -1,10 +1,3 @@
-<!--
-Blue Haired Gals With Pronouns: Jasmine Yuen, Talia Hsia, Ziying Jian
-SoftDev
-K19 - Flask app that uses session capabilites to allow user to login and logout
-2022-11-03
-time spent:
--->
 
 <!DOCTYPE html>
 <html>
@@ -26,17 +19,27 @@ time spent:
       Username:
     </h3>
     <form action="/register" method = "POST" class = "form">
-      <input type="text" name="usernameReg">
+      <input type="text" name="username">
     <br>
     <h3>
       Password:
     </h3>
-      <input type="text" name="passwordReg">
+      <input type="text" name="password">
     <br>
     <br>
       <input id = "regbut" type="submit" name="sub1" value="Register" class = "button">
     </form>
     <br>
+
+    <br>
+    <div class = "loginredir">
+        <h2>
+            Already have an account?
+        </h2>
+        <a href="/login" >Login</a>
+    </div>
+    <br>
+
     <div id = "regmsg">
       {{registerMSG}}
     </div>
