@@ -2,7 +2,7 @@ import json
 
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for  # web server essentials
-from database import database
+#from database import database
 
 from routes.home import home_bp
 from routes.flightinfo import flightinfo_bp
