@@ -2,48 +2,52 @@ import json
 
 import requests
 from flask import Flask, render_template, request, session, redirect, url_for  # web server essentials
-
+from database import database
 
 from routes.home import home_bp
 from routes.flightinfo import flightinfo_bp
 
-'''
+
 from routes.login import login_bp
 from routes.logout import logout_bp
 from routes.register import register_bp
 
 
-from utils import b64
+from tools import b64
 
 
 #from utils import _api
 #from utils import _api
 #from utils import _api
-#from utils import _api'''
+#from utils import _api
 
-'''
+
 global db
-db = database.Database()
-'''
+db = database.database()
+
 
 
 app = Flask(__name__, static_url_path='/static')
 
 
 app.register_blueprint(home_bp)
+<<<<<<< HEAD
 app.register_blueprint(flightinfo_bp)
 '''
+=======
+>>>>>>> ba0644e3e72df1adc748eab47db5d544f3645a8f
 app.register_blueprint(login_bp)
 app.register_blueprint(logout_bp)
 app.register_blueprint(register_bp)
 
 
 
+
 app.secret_key = b64.base64_encode(
-    "this is one hell of a secret key. it's really secure now that we encoded it into base64!")
+    "very good secret key. it's really secure now that we encoded it into base64!")
 
 
-
+'''
 @app.before_request
 def before_request():
     request.db = db
