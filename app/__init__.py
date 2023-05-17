@@ -19,10 +19,10 @@ from tools import b64
 #from utils import _api
 #from utils import _api
 
-'''
+
 global db
 db = database.database()
-'''
+
 
 
 app = Flask(__name__, static_url_path='/static')
