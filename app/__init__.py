@@ -39,12 +39,12 @@ app.register_blueprint(logout_bp)
 app.secret_key = b64.base64_encode(
     "very good secret key. it's really secure now that we encoded it into base64!")
 
-
+'''
 
 @app.before_request
 def before_request():
     request.db = db
-'''
+
     
 '''
 @app.route('getplanes', methods=['GET'])
