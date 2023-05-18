@@ -1,12 +1,41 @@
 # User database operations
 # DB should be of type cursor
 import fuckit
-
+import sqlite3
 # import library while preventing errors with json parsing
 fuckit(fuckit("json"))
 
+def data_query(do, info=None, fetchall=False):
+    db = sqlite3.connect("database.db")
+    c = db.cursor()
+    if info is None:
+        output = c.execute(do)
+    else:
+        output = c.execute(do, info)
+    if fetchall:
+        output = output.fetchall()
+    db.commit()
+    db.close()
+    return output
 
-def create_table(db) -> None:
+def get_table_list(name):
+    db = sqlite3.connect("database.db")
+    c = db.cursor()
+    curr = c.execute(f"SELECT * from {name}")
+    output = curr.fetchall()
+    db.commit()
+    db.close()
+    return output
+
+def verify(username, password):
+    user = False
+    accounts = get_table_list("users")
+    for account in accounts:
+        if account[1] == username and account[2] == password:
+            return True
+    return False
+
+def create_user_table() -> None:
     """
     Creates the users table
 
@@ -16,117 +45,26 @@ def create_table(db) -> None:
     Returns:
         None
     """
-    db.cur.execute("CREATE TABLE IF NOT EXISTS users (" +
+    data_query("CREATE TABLE IF NOT EXISTS users (" +
                    "id INTEGER PRIMARY KEY, " +
                    "username TEXT, " +
                    "password TEXT, " +
                    "previous_characters TEXT, " +
                    "qualities TEXT)")
-    # Save changes
-    db.conn.commit()
 
+def exists(name, table):
+    arr = get_table_list(table)
+    for i in arr:
+        if i[0] == name:
+            return True
+    return False
 
-def insert(db, username, password) -> None:
-    """
-    Inserts a user into the database
-
-    Args:
-        db (Database): The database to insert the user into
-        username (str): The username of the user to insert
-        password (str): The password of the user to insert
-
-    Returns:
-        None
-    """
-    db.cur.execute("INSERT INTO users VALUES " +
+def insert(username, password):
+    if not exists(username, "users") or username == None or username == "" or password == None or password == "":
+        data_query("INSERT INTO users VALUES " +
                    "(NULL, ?, ?, ?, ?)",
                    (username, password, "", "{}"))
-    db.conn.commit()
+    return exists(username, "users")
 
-
-def get_user(db, username) -> list:
-    """
-    Gets a user from the database
-
-    Args:
-        db (Database): The database to get the user from
-        username (str): The username of the user to get
-
-    Returns:
-        list: The users from the database (length 0 if no users, otherwise length 1)
-    """
-    db.cur.execute("SELECT * FROM users WHERE username=?", (username,))
-    return db.cur.fetchall()
-
-# def get_user_choice_by_category(db, username, category: str)
-
-
-def get_user_by_id(db, target_id) -> list:
-    """
-    Gets a user from the database
-
-    Args:
-        db (Database): The database to get the user from
-        target_id (int): The id of the user to get
-
-    Returns:
-        list: The users from the database (length 0 if no users, otherwise length 1)
-    """
-    db.cur.execute("SELECT * FROM users WHERE id=?", (target_id,))
-    return db.cur.fetchall()
-
-
-def check_password(db, username, password) -> bool:
-    """
-    Checks if a password is correct for a user
-
-    Args:
-        db (Database): The database to check the password in
-        username (str): The username of the user to check the password for
-        password (str): The password to check
-
-    Returns:
-        bool: True if the password is correct, False if not
-    """
-    db.cur.execute("SELECT * FROM users WHERE username=?", (username,))
-    user = db.cur.fetchall()
-    if len(user) == 0:
-        return False
-    return user[0][2] == password
-
-
-def convert_to_user(user) -> dict:
-    """
-    Converts a user from the database to a user object
-
-    Args:
-        user (list): The user from the database
-
-    Returns:
-        dict: The user object
-    """
-    return {
-        "id": user[0],
-        "username": user[1],
-        "password": user[2],
-        "previous_characters": json.loads(user[3]),
-        "qualities": json.loads(user[4])
-    }
-
-
-def convert_to_sql(user) -> list:
-    """
-    Converts a user object to a user for the database
-
-    Args:
-        user (dict): The user object
-
-    Returns:
-        list: The user for the database
-    """
-    return [
-        user["username"],
-        user["password"],
-        json.dumps(user["previous_characters"]),
-        json.dumps(user["qualities"])
-    ]
+create_user_table()
+print(get_table_list("users"))
