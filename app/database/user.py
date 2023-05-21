@@ -1,43 +1,36 @@
 # User database operations
 # DB should be of type cursor
-import sqlite3
-import json
-
-# import library while preventing errors with json parsing
-# fuckit(fuckit("json"))
+import sqlite3, json
 
 DB_FILE = "users.db"
 db = sqlite3.connect(DB_FILE, check_same_thread=False)
 
 
-def create_table(db) -> None:
+def create_table() -> None:
     """
     Creates the users table
 
     Args:
-        db (Database): The database to create the table in
+        None
 
     Returns:
         None
     """
     c = db.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS users (" +
-              "id INTEGER PRIMARY KEY, " +
-              "username TEXT, " +
-              "password TEXT, " +
-              "previous_characters TEXT, " +
-              "qualities TEXT)")
+                   "id INTEGER PRIMARY KEY, " +
+                   "username TEXT, " +
+                   "password TEXT)")
     # Save changes
     db.commit()
     c.close()
 
 
-def insert(db, username, password) -> None:
+def insert(username, password) -> None:
     """
     Inserts a user into the database
 
     Args:
-        db (Database): The database to insert the user into
         username (str): The username of the user to insert
         password (str): The password of the user to insert
 
@@ -45,9 +38,10 @@ def insert(db, username, password) -> None:
         None
     """
     c = db.cursor()
+    
     c.execute("INSERT INTO users VALUES " +
-              "(NULL, ?, ?, ?, ?)",
-              (username, password, "", "{}"))
+                   "(NULL, ?, ?, ?, ?)",
+                   (username, password, "", "{}"))
     db.commit()
     c.close()
 

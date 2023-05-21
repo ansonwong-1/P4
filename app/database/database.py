@@ -1,5 +1,4 @@
 import sqlite3
-import json
 import requests
 
 DB_FILE = "database.db"
