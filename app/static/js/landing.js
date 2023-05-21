@@ -1,59 +1,67 @@
-// creation of map
-const map = L.map("map", {
-  center: [50, 0],
-  zoom: 2,
-});
-
-/*
-diff links for tiles but still quite ugly
-["http://a.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png","http://b.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png","http://c.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png"]
-["http://a.tile.stamen.com/watercolor/{z}/{x}/{y}.png","http://b.tile.stamen.com/watercolor/{z}/{x}/{y}.png","http://c.tile.stamen.com/watercolor/{z}/{x}/{y}.png","http://d.tile.stamen.com/watercolor/{z}/{x}/{y}.png"]
-["http://a.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png","http://b.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png","http://c.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"]
-*/
-L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  maxZoom: 19,
-  attribution:
-    '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-}).addTo(map);
-
 // markers for planes
-const planeIcon = L.icon({
-  iconUrl: "static/img/plane.png", // i found a sample plane pic online
-  iconSize: [45, 45],
-  iconAnchor: [15, 15],
-  //popupAnchor: [0, -15]
+var planeIcon = L.icon({
+  iconUrl: "https://previews.123rf.com/images/asmati/asmati1702/asmati170203104/71461868-flying-plane-sign-side-view-black-icon-on-transparent-backgrou.jpg", // i found a sample plane pic online
+  iconSize:     [38, 38], // size of the icon
+  iconAnchor:   [19, 38], // point of the icon which will correspond to marker's location
+  popupAnchor:  [0,-38] // point from which the popup should open relative to the iconAnchor
 });
 
 // real-time data stuff -- adds markers to maps too
-function getPlanes() {
-  axios
-    .get("/planes")
+function getPlanes(page, pageSize) {
+  axios.get("/planes", {
+    params: {
+      page: page,
+      pageSize: pageSize
+    }
+  })
     .then(function (response) {
       var planes = response.data;
-      map.eachLayer(function (layer) {
-        if (layer instanceof L.Marker) {
-          map.removeLayer(layer);
-        }
-      });
-      displayPlanes(planes);
+      var bounds = map.getBounds(); // gets bounds for map currently
+
+      // add markers for each plane to map
       planes.forEach(function (plane) {
         var lat = plane.lat;
-        var longi = plane.longi;
-        if (lat && longi) {
-          L.marker([lat, longi], { icon: planeIcon }).addTo(map);
+        var lon = plane.lon;
+        
+        if (typeof lat === "number" && typeof lon === "number") {
+          var position = L.latLng(lat, lon);
+          
+          // checks to see if plane is within map bounds
+          if (bounds.contains(position)) {
+            var marker = L.marker([plane.lat, plane.lon], {icon: planeIcon});
+            marker.addTo(map);
+            marker.bindPopup("<b>" + plane.callsign + "</b><br/>" + plane.origin_country).openPopup();
+            // document.getElementById("planeMarkers").innerHTML += "<li>" + plane.callsign + "</li>";
+          }
         }
       });
     })
     .catch(function (error) {
-      console.log(error);
+      console.log('Error fetching plane data:', error);
     });
 }
-getPlanes();
-/*
-longitude for ny didnt match what i got from google search so copied this from leaflet
-function onMapClick(e) {
-    console.log("You clicked the map at " + e.latlng);
+
+// creation of map
+var map = L.map("map").setView([0, 0], 2);
+
+// adds tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+  maxZoom: 18,
+}).addTo(map);
+
+function updatePlanes() {
+  var page = 1;
+  var pageSize = 100;
+  getPlanes(page, pageSize);
 }
 
-map.on('click', onMapClick);
-*/
+// first fetch of planes
+updatePlanes();
+window.setInterval(updatePlanes, 5000); // updates map every 5 seconds
+
+// update planes whenever map zoom is changed
+map.on('zoomend', function () {
+  updatePlanes();
+});
+// window.setInterval(getPlanes, 5000);

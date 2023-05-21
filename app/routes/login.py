@@ -30,11 +30,11 @@ def login(*args, **kwargs):
             return render_template('login.html', error="Invalid password (must be at least 8 characters)")
 
         # Check if the username exists
-        if len(user.get_user(request.db, username)) == 0:
+        if user.username_in_system(username) == False:
             return render_template('login.html', error="Username does not exist")
 
         # Check if the password is correct
-        if not user.check_password(request.db, username, password):
+        if user.login(username, password) == False:
             return render_template('login.html', error="Incorrect password")
 
         # Log the user in

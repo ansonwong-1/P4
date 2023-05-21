@@ -6,7 +6,7 @@ db = sqlite3.connect(DB_FILE, check_same_thread=False)
 
 def setup_tables():
     c = db.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS planes (f_id TEXT PRIMARY KEY, callsign TEXT, origin_country TEXT, longi REAL, lat REAL, last_update INTEGER)")
+    c.execute("CREATE TABLE IF NOT EXISTS planes (f_id TEXT PRIMARY KEY, callsign TEXT, origin_country TEXT, lon REAL, lat REAL, last_update INTEGER)")
     db.commit()
     c.close()
 
@@ -20,17 +20,19 @@ def add_to_table():
         f_id = plane[0]
         callsign = plane[1]
         origin_country = plane[2]
-        longi = plane[5]
+        lon = plane[5]
         lat = plane[6]
         last_update = plane[3]
         
-        c.execute("INSERT OR REPLACE INTO planes (f_id, callsign, origin_country, longi, lat, last_update) VALUES (?, ?, ?, ?, ?, ?)", (f_id, callsign, origin_country, longi, lat, last_update))
+        c.execute("INSERT OR REPLACE INTO planes (f_id, callsign, origin_country, lon, lat, last_update) VALUES (?, ?, ?, ?, ?, ?)", (f_id, callsign, origin_country, lon, lat, last_update))
     db.commit()
     c.close()
 
-def get_plane_data():
+# plane data given relative to page and page size
+def get_plane_data(page, page_size):
     c = db.cursor()
-    c.execute("SELECT * FROM planes")
+    offset = (page - 1) * page_size
+    c.execute("SELECT * FROM planes LIMIT ? OFFSET ?", (page_size, offset))
     data = c.fetchall()
     c.close()
     return data

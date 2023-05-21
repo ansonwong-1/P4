@@ -1,134 +1,59 @@
-# User database operations
-# DB should be of type cursor
 import sqlite3, json
 
-DB_FILE = "users.db"
-db = sqlite3.connect(DB_FILE, check_same_thread=False)
+db = sqlite3.connect("user.db", check_same_thread=False)
 
+# making tables
+c = db.cursor()
+c.execute("CREATE TABLE if not exists users(username TEXT, password TEXT)")
 
-def create_table() -> None:
-    """
-    Creates the users table
-
-    Args:
-        None
-
-    Returns:
-        None
-    """
+# general method that can be used to get data easier
+def select_from(database, table, data_want, datagive, datatype_give):
+    db = sqlite3.connect(database, check_same_thread=False)
     c = db.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS users (" +
-                   "id INTEGER PRIMARY KEY, " +
-                   "username TEXT, " +
-                   "password TEXT)")
-    # Save changes
-    db.commit()
-    c.close()
+    temp = ((c.execute(f"SELECT {data_want} FROM {table} WHERE {datatype_give} = '{datagive}'")).fetchall())
+    if(len(temp) > 0):
+        return temp[0][0]
+    else:
+        return 0
 
-
-def insert(username, password) -> None:
-    """
-    Inserts a user into the database
-
-    Args:
-        username (str): The username of the user to insert
-        password (str): The password of the user to insert
-
-    Returns:
-        None
-    """
+def username_in_system(username):
     c = db.cursor()
-    
-    c.execute("INSERT INTO users VALUES " +
-                   "(NULL, ?, ?, ?, ?)",
-                   (username, password, "", "{}"))
-    db.commit()
-    c.close()
+    temp = list(c.execute("SELECT username FROM users").fetchall())
+    for element in temp:
+        for element2 in element:
+            if username == element2:
+                return True
+    return False
 
-
-def get_user(db, username) -> list:
-    """
-    Gets a user from the database
-
-    Args:
-        db (Database): The database to get the user from
-        username (str): The username of the user to get
-
-    Returns:
-        list: The users from the database (length 0 if no users, otherwise length 1)
-    """
-    db.cur.execute("SELECT * FROM users WHERE username=?", (username,))
-    return db.cur.fetchall()
-
-# def get_user_choice_by_category(db, username, category: str)
-
-
-def get_user_by_id(db, target_id) -> list:
-    """
-    Gets a user from the database
-
-    Args:
-        db (Database): The database to get the user from
-        target_id (int): The id of the user to get
-
-    Returns:
-        list: The users from the database (length 0 if no users, otherwise length 1)
-    """
-    db.cur.execute("SELECT * FROM users WHERE id=?", (target_id,))
-    return db.cur.fetchall()
-
-
-def check_password(db, username, password) -> bool:
-    """
-    Checks if a password is correct for a user
-
-    Args:
-        db (Database): The database to check the password in
-        username (str): The username of the user to check the password for
-        password (str): The password to check
-
-    Returns:
-        bool: True if the password is correct, False if not
-    """
-    db.cur.execute("SELECT * FROM users WHERE username=?", (username,))
-    user = db.cur.fetchall()
-    if len(user) == 0:
+def signup(username, password):
+    c = db.cursor()
+    if(username_in_system(username)):
         return False
-    return user[0][2] == password
+    else:
+        c.execute("INSERT INTO users VALUES (?,?)", (username, password))
+    db.commit()
+    return True #save changes
+
+# this method is prob not needed but we can add a feature for deleting account or smth
+def remove_user(username):
+    c = db.cursor()
+    try:
+        c.execute(f'DELETE FROM users WHERE username = "{username}"')
+        db.commit()
+        return True
+    except:
+        return False
+    
+# to verify if the password given is right to login
+def login(username, password):
+    if(username_in_system(username)):
+        if(select_from("user.db", "users", "password", username, "username") == password):
+            return True
+    return False
 
 
-def convert_to_user(user) -> dict:
-    """
-    Converts a user from the database to a user object
-
-    Args:
-        user (list): The user from the database
-
-    Returns:
-        dict: The user object
-    """
-    return {
-        "id": user[0],
-        "username": user[1],
-        "password": user[2],
-        "previous_characters": json.loads(user[3]),
-        "qualities": json.loads(user[4])
-    }
-
-
-def convert_to_sql(user) -> list:
-    """
-    Converts a user object to a user for the database
-
-    Args:
-        user (dict): The user object
-
-    Returns:
-        list: The user for the database
-    """
-    return [
-        user["username"],
-        user["password"],
-        json.dumps(user["previous_characters"]),
-        json.dumps(user["qualities"])
-    ]
+def edit_username(old_username, username):
+    db = sqlite3.connect("user.db", check_same_thread=False)
+    c = db.cursor()
+    c.execute(f"UPDATE users SET username = '{username}' WHERE username = '{old_username}'")
+    db.commit()
