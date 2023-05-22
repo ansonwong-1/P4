@@ -30,11 +30,11 @@ def register(*args, **kwargs):
             return render_template('register.html', error="Invalid password (must be at least 8 characters)")
 
         # Check if the username is already taken
-        if len(user.get_user(request.db, username)) > 0:
+        if user.username_in_system(username) == True:
             return render_template('register.html', error="Username already taken")
 
         # Create the user
-        user.insert(request.db, username, password)
+        user.signup(username, password)
 
         # Automatically log the user in
         session['username'] = username

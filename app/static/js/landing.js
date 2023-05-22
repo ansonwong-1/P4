@@ -1,62 +1,67 @@
-// creation of map
-const map = L.map('map', {
-    center: [50,0],
-    zoom: 2
+// markers for planes
+var planeIcon = L.icon({
+  iconUrl: "https://previews.123rf.com/images/asmati/asmati1702/asmati170203104/71461868-flying-plane-sign-side-view-black-icon-on-transparent-backgrou.jpg", // i found a sample plane pic online
+  iconSize:     [38, 38], // size of the icon
+  iconAnchor:   [19, 38], // point of the icon which will correspond to marker's location
+  popupAnchor:  [0,-38] // point from which the popup should open relative to the iconAnchor
 });
 
-/*
-diff links for tiles but still quite ugly
-["http://a.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png","http://b.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png","http://c.tile3.opencyclemap.org/landscape/{z}/{x}/{y}.png"]
-["http://a.tile.stamen.com/watercolor/{z}/{x}/{y}.png","http://b.tile.stamen.com/watercolor/{z}/{x}/{y}.png","http://c.tile.stamen.com/watercolor/{z}/{x}/{y}.png","http://d.tile.stamen.com/watercolor/{z}/{x}/{y}.png"]
-["http://a.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png","http://b.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png","http://c.tile2.opencyclemap.org/transport/{z}/{x}/{y}.png"]
-*/
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+// real-time data stuff -- adds markers to maps too
+function getPlanes(page, pageSize) {
+  axios.get("/planes", {
+    params: {
+      page: page,
+      pageSize: pageSize
+    }
+  })
+    .then(function (response) {
+      var planes = response.data;
+      var bounds = map.getBounds(); // gets bounds for map currently
+
+      // add markers for each plane to map
+      planes.forEach(function (plane) {
+        var lat = plane.lat;
+        var lon = plane.lon;
+        
+        if (typeof lat === "number" && typeof lon === "number") {
+          var position = L.latLng(lat, lon);
+          
+          // checks to see if plane is within map bounds
+          if (bounds.contains(position)) {
+            var marker = L.marker([plane.lat, plane.lon], {icon: planeIcon});
+            marker.addTo(map);
+            marker.bindPopup("<b>" + plane.callsign + "</b><br/>" + plane.origin_country).openPopup();
+            // document.getElementById("planeMarkers").innerHTML += "<li>" + plane.callsign + "</li>";
+          }
+        }
+      });
+    })
+    .catch(function (error) {
+      console.log('Error fetching plane data:', error);
+    });
+}
+
+// creation of map
+var map = L.map("map").setView([0, 0], 2);
+
+// adds tile layer
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+  maxZoom: 18,
 }).addTo(map);
 
-// markers for planes
-const planeIcon = L.icon({
-    iconUrl: 'static/img/plane.png', // i found a sample plane pic online
-    iconSize: [45, 45],
-    iconAnchor: [15, 15],
-    //popupAnchor: [0, -15]
+function updatePlanes() {
+  var page = 1;
+  var pageSize = 100;
+  getPlanes(page, pageSize);
+}
+
+// first fetch of planes
+updatePlanes();
+window.setInterval(updatePlanes, 5000); // updates map every 5 seconds
+
+// update planes whenever map zoom is changed
+map.on('zoomend', function () {
+  updatePlanes();
 });
-
-// real-time data stuff -- will come from database hopefully
-function getPlanes() {
-    // $.ajax({
-    //     url: '/get-planes', 
-    //     type: 'GET',
-    //     success: function(data) {
-    //         displayPlanes(data);
-    //     },
-    //     error: function(error) {
-    //         console.log(error);
-    //     }
-    // });
-    var planes = [
-        //this is not statue of liberty idk how lng works in leaflet :/
-        { id: 1, name: 'Plane 1', lat: 40.6892, lng: 74.0445 }, // statue of liberty
-        { id: 2, name: 'Plane 2', lat: 40.7128, lng: -74.0060 },
-        { id: 3, name: 'Plane 3', lat: 51.5074, lng: -0.1278 }
-      ];
-    displayPlanes(planes);
-}
-
-function displayPlanes(planes) {
-    for (let i = 0; i < planes.length; i++) {
-        const plane = planes[i];
-        const marker = L.marker([plane.lat, plane.lng], { icon: planeIcon }).addTo(map);
-        marker.bindPopup(plane.name).openPopup(); //can put wtv flight info in () not need another page
-    }
-}
-getPlanes()
-/*
-longitude for ny didnt match what i got from google search so copied this from leaflet
-function onMapClick(e) {
-    console.log("You clicked the map at " + e.latlng);
-}
-
-map.on('click', onMapClick);
-*/
+// window.setInterval(getPlanes, 5000);
