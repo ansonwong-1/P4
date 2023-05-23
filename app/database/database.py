@@ -37,5 +37,5 @@ def get_plane_data(page, page_size):
     c.close()
     return data
 
-setup_tables()
-add_to_table()
+#setup_tables()
+#add_to_table()
