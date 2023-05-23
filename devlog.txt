@@ -47,3 +47,8 @@ mahirR -- 2023-05-15 9:00
 --------------------------------------------------------------
 Reworked the planes script and using the api to gain data to the database
 ==============================================================
+
+brianC -- 2023-05-22 9:00
+--------------------------------------------------------------
+Updates planes to get info from database, and only display current planes in air and planes of correct size; planes have direction; autoupdate and clear planes on map change
+==============================================================
