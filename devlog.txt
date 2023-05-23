@@ -57,4 +57,5 @@ mahirR -- 2023-05-23 9:00
 --------------------------------------------------------------
 fixed databases (made the user database and fixed up the planes database)
 updated js code to where popups appear for each plane with their callsigns and origin country
+made the flightinfo page which shows all flights and added a search feature for searching via country of origin
 ==============================================================

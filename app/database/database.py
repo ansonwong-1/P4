@@ -37,5 +37,12 @@ def get_plane_data(page, page_size):
     c.close()
     return data
 
+def get_all_plane_data():
+    c = db.cursor()
+    c.execute("SELECT * FROM planes")
+    data = c.fetchall()
+    c.close()
+    return data
+
 #setup_tables()
 #add_to_table()

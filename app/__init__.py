@@ -1,6 +1,8 @@
+# all the routes are in seperate files with the help of flask blueprints
+
 import sqlite3
 from database import database as db, user as userdb
-from flask import Flask, render_template, request, session, redirect, url_for, jsonify # web server essentials
+from flask import Flask, request, jsonify
 
 from routes.home import home_bp
 from routes.login import login_bp
