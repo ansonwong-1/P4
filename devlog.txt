@@ -52,3 +52,9 @@ brianC -- 2023-05-22 9:00
 --------------------------------------------------------------
 Updates planes to get info from database, and only display current planes in air and planes of correct size; planes have direction; autoupdate and clear planes on map change
 ==============================================================
+
+mahirR -- 2023-05-23 9:00
+--------------------------------------------------------------
+fixed databases (made the user database and fixed up the planes database)
+updated js code to where popups appear for each plane with their callsigns and origin country
+==============================================================
