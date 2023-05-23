@@ -1,5 +1,4 @@
 import sqlite3
-import requests
 from database import database as db, user as userdb
 from flask import Flask, render_template, request, session, redirect, url_for, jsonify # web server essentials
 
@@ -44,7 +43,7 @@ def getplanes():
     planes = data[start:end]
     response = []
     
-    for plane in data:
+    for plane in planes:
         f_id, callsign, origin_country, lon, lat, last_update = plane
         response.append({
             "f_id": f_id,

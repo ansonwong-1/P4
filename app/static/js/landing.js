@@ -74,8 +74,6 @@ var map = L.map('map',{
 });
 
 
-
-
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 10,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -175,7 +173,7 @@ function makeFlights(data){
         L.marker([pos[1],pos[0]], {
             icon: myIcon,
             rotationAngle: pos[2],
-        }).addTo(layerGroup);
+        }).addTo(layerGroup).bindPopup("<b>" + "Callsign: " + data[i][1] + "</b><br/>" + "Origin Country: " + data[i][2]);
       };
   }
 };
@@ -196,8 +194,7 @@ async function getData(bounds) {
       makeFlights(flightData);
   }
 
-
-  //console.log(flightData);
+  // console.log(flightData);
 
 };
 
@@ -206,16 +203,9 @@ function updatePlanes(){
   getData(bounds);
 }
 
-map.on('zoomend moveend load', function () {
-  updatePlanes();
-});
+// map.on('zoomend moveend load', function () {
+//   updatePlanes();
+// });
 
-window.setInterval(updatePlanes, 3000); 
-
-
+window.setInterval(updatePlanes, 3000); // updates map every 3 seconds
 map.setView([40.7128, -74.0060], 10);
-
-
-
-
-

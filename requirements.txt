@@ -1,5 +1,4 @@
 Flask==2.3.2
 requests==2.30.0
 utils==1.0.1
-fuckit~=4.8.1
 
