@@ -34,8 +34,11 @@ def before_request():
 @app.route("/planes")
 def getplanes():
     page = int(request.args.get("page", 1))
-    page_size = int(request.args.get("page_size", 100))
-    db.add_to_table()
+    page_size = int(request.args.get("page_size", 1000))
+    try:
+        db.add_to_table()
+    except:
+        pass
     data = db.get_plane_data(page, page_size)
     
     # starting and ending index for page

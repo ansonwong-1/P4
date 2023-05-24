@@ -1,74 +1,3 @@
-/*
-// markers for planes
-var planeIcon = L.icon({
-  iconUrl: "https://previews.123rf.com/images/asmati/asmati1702/asmati170203104/71461868-flying-plane-sign-side-view-black-icon-on-transparent-backgrou.jpg", // i found a sample plane pic online
-  iconSize:     [38, 38], // size of the icon
-  iconAnchor:   [19, 38], // point of the icon which will correspond to marker's location
-  popupAnchor:  [0,-38] // point from which the popup should open relative to the iconAnchor
-});
-
-// real-time data stuff -- adds markers to maps too
-function getPlanes(page, pageSize) {
-  axios.get("/planes", {
-    params: {
-      page: page,
-      pageSize: pageSize
-    }
-  })
-    .then(function (response) {
-      var planes = response.data;
-      var bounds = map.getBounds(); // gets bounds for map currently
-
-      // add markers for each plane to map
-      planes.forEach(function (plane) {
-        var lat = plane.lat;
-        var lon = plane.lon;
-        
-        if (typeof lat === "number" && typeof lon === "number") {
-          var position = L.latLng(lat, lon);
-          
-          // checks to see if plane is within map bounds
-          if (bounds.contains(position)) {
-            var marker = L.marker([plane.lat, plane.lon], {icon: planeIcon});
-            marker.addTo(map);
-            marker.bindPopup("<b>" + plane.callsign + "</b><br/>" + plane.origin_country).openPopup();
-            // document.getElementById("planeMarkers").innerHTML += "<li>" + plane.callsign + "</li>";
-          }
-        }
-      });
-    })
-    .catch(function (error) {
-      console.log('Error fetching plane data:', error);
-    });
-}
-
-// creation of map
-var map = L.map("map").setView([0, 0], 2);
-
-// adds tile layer
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-  maxZoom: 18,
-}).addTo(map);
-
-function updatePlanes() {
-  var page = 1;
-  var pageSize = 100;
-  getPlanes(page, pageSize);
-}
-
-// first fetch of planes
-updatePlanes();
-window.setInterval(updatePlanes, 5000); // updates map every 5 seconds
-
-// update planes whenever map zoom is changed
-map.on('zoomend', function () {
-  updatePlanes();
-});
-// window.setInterval(getPlanes, 5000);
-
-*/
-
 var map = L.map('map',{
   minZoom: 5,
 });
@@ -116,18 +45,21 @@ var mapBounds = (e) => {
           this._applyRotation();
       },
 
-      _applyRotation: function () {
-          if(this.options.rotationAngle) {
-              this._icon.style[L.DomUtil.TRANSFORM+'Origin'] = this.options.rotationOrigin;
-
-              if(oldIE) {
-                  // for IE 9, use the 2D rotation
-                  this._icon.style[L.DomUtil.TRANSFORM] = 'rotate(' + this.options.rotationAngle + 'deg)';
-              } else {
-                  // for modern browsers, prefer the 3D accelerated version
-                  this._icon.style[L.DomUtil.TRANSFORM] += ' rotateZ(' + this.options.rotationAngle + 'deg)';
-              }
+      _applyRotation: function() {
+        if (this.options.rotationAngle) {
+          this._icon.style.transformOrigin = this.options.rotationOrigin;
+      
+          if (L.DomUtil.TRANSFORM) {
+            // Modern browsers
+            this._icon.style.transform = 'rotate(' + this.options.rotationAngle + 'deg)';
+          } else if (L.DomUtil.TRANSFORM3D) {
+            // Fallback for old browsers supporting 3D transforms
+            this._icon.style[L.DomUtil.TRANSFORM3D] += ' rotate(' + this.options.rotationAngle + 'deg)';
+          } else {
+            // Fallback for old browsers supporting only 2D transforms
+            this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.rotationAngle + 'deg)';
           }
+        }
       },
 
       setRotationAngle: function(angle) {
@@ -152,60 +84,92 @@ function getFlightPos(data){
 };
 
 
-function makeFlights(data){
-  flights = [];
+var planeMarkers = {}; // Store markers by flight ID
 
-  layerGroup.clearLayers();
-  
+function makeFlights(data) {
+  // Remove markers of planes that are no longer present in the data
+  for (var planeId in planeMarkers) {
+    if (!data.some(plane => plane.f_id === planeId)) {
+      map.removeLayer(planeMarkers[planeId]);
+      delete planeMarkers[planeId];
+    }
+  }
+
   var zoom = map.getZoom();
-  console.log(zoom);
-  var x = 30/((Math.abs(zoom-11))/2);
-  console.log(x);
+  var x = 30 / ((Math.abs(zoom - 11)) / 2);
   var myIcon = new L.icon({
-      iconUrl: 'static/img/plane.png',
-      iconSize: [x, x],
+    iconUrl: 'static/img/plane.png',
+    iconSize: [x, x],
   });
 
-  for (let i = 0; i < data.length; i++) {
-      if (data[i][8] == false ){
-        pos = getFlightPos(data[i]);
-        //console.log(pos);
-        L.marker([pos[1],pos[0]], {
-            icon: myIcon,
-            rotationAngle: pos[2],
-        }).addTo(layerGroup).bindPopup("<b>" + "Callsign: " + data[i][1] + "</b><br/>" + "Origin Country: " + data[i][2]);
-      };
+  for (var i = 0; i < data.length; i++) {
+    var plane = data[i];
+    var planeId = plane.f_id;
+
+    // Skip if latitude or longitude is null
+    if (plane.lat === null || plane.lon === null) {
+      continue;
+    }
+
+    var pos = [plane.lat, plane.lon, plane.last_update];
+
+    if (planeId in planeMarkers) {
+      // Update existing marker position
+      planeMarkers[planeId].setLatLng([pos[0], pos[1]]);
+      planeMarkers[planeId].setRotationAngle(pos[2]);
+    } else {
+      // Create new marker
+      var marker = L.marker([pos[0], pos[1]], {
+        icon: myIcon,
+        rotationAngle: pos[2],
+      }).addTo(layerGroup).bindPopup(
+        "<b>Callsign: " +
+        plane.callsign +
+        "</b><br/>" +
+        "Origin Country: " +
+        plane.origin_country
+      );
+      planeMarkers[planeId] = marker;
+    }
   }
-};
+}
 
 
-async function getData(bounds) {
-  var lamin = bounds["_southWest"]["lat"];
-  var lomin = bounds["_southWest"]["lng"];
-  var lamax = bounds["_northEast"]["lat"];
-  var lomax = bounds["_northEast"]["lng"];
+// async function getData(bounds) {
+//   var lamin = bounds["_southWest"]["lat"];
+//   var lomin = bounds["_southWest"]["lng"];
+//   var lamax = bounds["_northEast"]["lat"];
+//   var lomax = bounds["_northEast"]["lng"];
 
-  const response = await fetch(`https://opensky-network.org/api/states/all?lamin=${lamin}&lomin=${lomin}&lamax=${lamax}&lomax=${lomax}`, {
-      method: "GET",
-  });
-  const jsonData = await response.json();
-  flightData = jsonData["states"];
-  if (flightData != null){
-      makeFlights(flightData);
-  }
+//   const response = await fetch(`https://opensky-network.org/api/states/all?lamin=${lamin}&lomin=${lomin}&lamax=${lamax}&lomax=${lomax}`, {
+//       method: "GET",
+//   });
+//   const jsonData = await response.json();
+//   flightData = jsonData["states"];
+//   if (flightData != null){
+//       makeFlights(flightData);
+//   }
 
-  // console.log(flightData);
+//   // console.log(flightData);
 
-};
+// };
 
-function updatePlanes(){
+function updatePlanes() {
   var bounds = map.getBounds();
-  getData(bounds);
+
+  fetch('/planes')
+    .then(response => response.json())
+    .then(flightData => {
+      makeFlights(flightData);
+    })
+    .catch(error => {
+      console.error('Error fetching flight data:', error);
+    });
 }
 
 // map.on('zoomend moveend load', function () {
 //   updatePlanes();
 // });
 
-window.setInterval(updatePlanes, 3000); // updates map every 3 seconds
+window.setInterval(updatePlanes, 5000); // updates map every 5 seconds
 map.setView([40.7128, -74.0060], 10);
