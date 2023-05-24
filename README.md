@@ -19,7 +19,7 @@ OR
 3. Cd into the app directory with ```cd P4/app```
 4. Run ```python __init__.py```  
 ### APIs: 
-OpenSky
+https://github.com/stuy-softdev/notes-and-code/blob/main/api_kb/411_on_Opensky.md
 ### Data: 
 #### Description: 
 Stored f_id, callsign, origin_country, lon, lat, last_update in sqlite3 database table
