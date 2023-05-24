@@ -48,6 +48,15 @@ mahirR -- 2023-05-15 9:00
 Reworked the planes script and using the api to gain data to the database
 ==============================================================
 
+coMBAT TAMBourine -- 2023-05-18 9:00
+--------------------------------------------------------------
+Tour: Most groups visualized data by using maps and graphs
+The data for the graphs were sample datasets and most groups didn't have the data conduit working
+For the maps, people used different libraries like mapbox, d3, and leaflet
+D3 let groups interact with the maps (show which country was being hovered over/clicked) as well as change graphs based on what was clicked
+With leaflet, we noticed that markers would get more inaccurate/move with each zoom
+==============================================================
+
 brianC -- 2023-05-22 9:00
 --------------------------------------------------------------
 Updates planes to get info from database, and only display current planes in air and planes of correct size; planes have direction; autoupdate and clear planes on map change
