@@ -11,44 +11,63 @@
     >
   </head>
 
-  <body class = "register">
-    <h1>
-      Register page??
-    </h1>
-    Made by coMBAT TAMBorines!
-    <h2>
-      REGISTER HERE
-    </h2>
+  <body class = "register" data-bs-theme="dark">
+   
 
-    <h3>
-      Username:
-    </h3>
-    <form action="/register" method = "POST" class = "form">
-      <input type="text" name="username">
-    <br>
-    <h3>
-      Password:
-    </h3>
-      <input type="text" name="password">
-    <br>
-    <br>
-      <input id = "regbut" type="submit" name="sub1" value="Register" class = "button">
-    </form>
-    <br>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Made by coMBAT TAMBorines</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-    <br>
-    <div class = "loginredir">
-        <h2>
-            Already have an account?
-        </h2>
-        <a href="/login" >Login</a>
-    </div>
-    <br>
+    <div class="card mx-5 my-4 text-black shadow-lg" data-bs-theme="light">
+      <div class="card-body">
+          <h2 class="card-title py-3">Register Here</h2>
+          
 
-    <div id = "regmsg">
-      {{registerMSG}}
-      {{ error }}
-    </div>
+          <div class="container-md ">
+              <form action="/register" method="POST" class="form">
+                  <div class="form-floating mb-4 d-flex justify-content-center">   
+                      <input type="text" class="form-control w-50" id="floatingInput" name = "username" placeholder="Username">
+                      <label  for="floatingInput">Username</label>
+                  </div>
+                  <div class="form-floating mb-4 d-flex justify-content-center">
+                      <input type="password" class="form-control w-50" id="floatingPassword"  name = "password" placeholder="Password">
+                      <label for="floatingPassword">Password</label>
+                  </div>
+                  <div class="container-sm">
+                      <input type="submit" class="btn btn-outline-primary" name="sub1" value="Register" id class="button">
+                  </div>
+                  <br>
+                  <div class = "mt-3 px-3">
+                      <h2>
+                          Already have an account?
+                      </h2>
+                      <a href="/login" class = "btn btn-outline-primary">Login</a>
+                  </div>
+              </form>
+              <br>
+              <div id="regmsg">
+                  {{ registerMSG }}
+              </div>
+          </div>
+
+      </div>
+  </div>
         
   </body>
 
