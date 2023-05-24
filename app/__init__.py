@@ -37,8 +37,9 @@ def getplanes():
     page_size = int(request.args.get("page_size", 1000))
     try:
         db.add_to_table()
+        print("updated table")
     except:
-        pass
+        print("error updating table")
     data = db.get_plane_data(page, page_size)
     
     # starting and ending index for page

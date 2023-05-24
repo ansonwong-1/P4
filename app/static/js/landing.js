@@ -4,7 +4,7 @@ var map = L.map('map',{
 
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 10,
+  maxZoom: 18,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
@@ -45,21 +45,18 @@ var mapBounds = (e) => {
           this._applyRotation();
       },
 
-      _applyRotation: function() {
-        if (this.options.rotationAngle) {
-          this._icon.style.transformOrigin = this.options.rotationOrigin;
-      
-          if (L.DomUtil.TRANSFORM) {
-            // Modern browsers
-            this._icon.style.transform = 'rotate(' + this.options.rotationAngle + 'deg)';
-          } else if (L.DomUtil.TRANSFORM3D) {
-            // Fallback for old browsers supporting 3D transforms
-            this._icon.style[L.DomUtil.TRANSFORM3D] += ' rotate(' + this.options.rotationAngle + 'deg)';
-          } else {
-            // Fallback for old browsers supporting only 2D transforms
-            this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.rotationAngle + 'deg)';
+      _applyRotation: function () {
+          if(this.options.rotationAngle) {
+              this._icon.style[L.DomUtil.TRANSFORM+'Origin'] = this.options.rotationOrigin;
+
+              if(oldIE) {
+                  // for IE 9, use the 2D rotation
+                  this._icon.style[L.DomUtil.TRANSFORM] = 'rotate(' + this.options.rotationAngle + 'deg)';
+              } else {
+                  // for modern browsers, prefer the 3D accelerated version
+                  this._icon.style[L.DomUtil.TRANSFORM] += ' rotateZ(' + this.options.rotationAngle + 'deg)';
+              }
           }
-        }
       },
 
       setRotationAngle: function(angle) {
@@ -75,8 +72,6 @@ var mapBounds = (e) => {
       }
   });
 })();
-
-
 
 function getFlightPos(data){
   var pos = [data[5], data[6], data[10]]

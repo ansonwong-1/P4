@@ -64,5 +64,5 @@ mahirR -- 2023-05-23 10:00
 --------------------------------------------------------------
 changed up the landing.js code so code is less reliant on api and more reliant on the database
 added a try/except statement to /planes route so that if limitation for api is reached, planes will still show on map without error
-fixed rotation of planes to account for new js code
+adjusted map so zooming in farther is possible
 ==============================================================
