@@ -75,3 +75,7 @@ changed up the landing.js code so code is less reliant on api and more reliant o
 added a try/except statement to /planes route so that if limitation for api is reached, planes will still show on map without error
 adjusted map so zooming in farther is possible
 ==============================================================
+ansonW -- 2023-05-24 5:00
+--------------------------------------------------------------
+dd change to reflect site- took out features like graphs of historical data and profiles, changed db table structure (store minimum that's used on our site), explained components in paragraph
+==============================================================
